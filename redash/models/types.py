@@ -47,6 +47,8 @@ class PseudoJSON(TypeDecorator):
     def process_result_value(self, value, dialect):
         if not value:
             return value
+        if isinstance(value, bytes):
+            value = value.encode("UTF-8")
         return json_loads(value)
 
 

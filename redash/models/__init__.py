@@ -634,9 +634,7 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
     @classmethod
     def outdated_queries(cls):
         queries = (
-            Query.query.options(
-                joinedload(Query.latest_query_data).load_only("retrieved_at")
-            )
+            Query.query.options(joinedload(Query.latest_query_data).load_only("retrieved_at"))
             .filter(Query.schedule.isnot(None))
             .order_by(Query.id)
             .all()
@@ -648,6 +646,10 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
 
         for query in queries:
             try:
+                # NOTE: This should be filtered out by the queries query but it's not.
+                if query.schedule is None:
+                    continue
+
                 if query.schedule.get("disabled"):
                     continue
 
