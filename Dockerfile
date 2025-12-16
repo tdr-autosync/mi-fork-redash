@@ -34,6 +34,11 @@ ARG skip_dev_deps
 
 RUN useradd --create-home redash
 
+# Point to Debian archive for EOL Buster
+RUN sed -i 's|http://deb.debian.org/debian|http://archive.debian.org/debian|g' /etc/apt/sources.list && \
+    sed -i 's|http://deb.debian.org/debian-security|http://archive.debian.org/debian-security|g' /etc/apt/sources.list && \
+    sed -i '/buster-updates/d' /etc/apt/sources.list
+
 # Ubuntu packages
 RUN apt-get update && \
   apt-get install -y \
@@ -58,7 +63,7 @@ RUN apt-get update && \
     libsasl2-dev \
     unzip \
     libsasl2-modules-gssapi-mit && \
-  # MSSQL ODBC Driver:  
+  # MSSQL ODBC Driver:
   curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
   curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
   apt-get update && \
