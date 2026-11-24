@@ -1,0 +1,62 @@
+# Template provenance and tracking for generated files.
+# Managed by Harness Composer. Do not edit manually.
+# Update only through Harness Composer CLI commands or workflows.
+$schema: "autonex://sdlc/harness-composer/schemas/template-state.v1.schema.json"
+templates:
+  - target: .harness-composer/bin/harness-composer
+    recipe: base.harness
+    recipe_version: 36
+    template: templates/.harness-composer/bin/harness-composer
+    template_hash: "sha256:f94f7409826570df565ca18082356ed902c3f1f9a3975f0501241dcd8bfcc8e4"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:41Z"
+    local_hash_after_install: "sha256:f4094d6d54cd1514402f7a7c6ccccc8d26b0b4511a90303f8084e9a72c581a18"
+  - target: .harness-composer/CONFIG.yaml
+    recipe: base.harness
+    recipe_version: 36
+    template: templates/.harness-composer/CONFIG.yaml
+    template_hash: "sha256:c4c41e37ba0450088451ce09cd5f12a30ca188e543c2df49cf90ad60827174f7"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:41Z"
+    local_hash_after_install: "sha256:7c2a969a27037ac779a2e28125ff804cf775aa98315f4dca9387dcb32d109f18"
+  - target: AGENTS.md
+    recipe: base.docs
+    recipe_version: 54
+    template: templates/AGENTS.md
+    template_hash: "sha256:2a49c5587cdb81cc2708c55bcbf4145124ba9a10427018a06b3d27d51bd472b1"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:45Z"
+    local_hash_after_install: "sha256:7ce8c48e1344e533af876546020068586ab198e3e87cc0d4e3d81d834fc81c8c"
+  - target: docs/contracts/documentation.md
+    recipe: base.docs
+    recipe_version: 54
+    template: templates/docs/contracts/documentation.md
+    template_hash: "sha256:2fb83fb41191a7ca97e2aaad52f9492709c1080d6f6e70906d6ca99d188a9bcf"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:46Z"
+    local_hash_after_install: "sha256:2fb83fb41191a7ca97e2aaad52f9492709c1080d6f6e70906d6ca99d188a9bcf"
+  - target: .github/workflows/harness-composer-housekeeping.yml
+    recipe: workflow.scheduled-housekeeping
+    recipe_version: 26
+    template: templates/.github/workflows/harness-composer-housekeeping.yml
+    template_hash: "sha256:0f654e013526e65b5520107b8227060464fe9c70cd743355b66d37b35e5691e7"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:47Z"
+    local_hash_after_install: "sha256:5a2c1b0760c368b2654963967cd7205a6db87d362b6a08f7f514fe6f01abf8d0"
+  - target: .harness-composer/state/workflow.scheduled-housekeeping.yaml
+    recipe: workflow.scheduled-housekeeping
+    recipe_version: 26
+    template: templates/.harness-composer/state/workflow.scheduled-housekeeping.yaml
+    template_hash: "sha256:753fc54d2d0a8f0b1cca17b3f3acaab591c54d823517a3376722604faf446e6c"
+    template_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+    installed_by_plugin_version: "0.62.0"
+    installed_at: "2026-11-24T12:57:48Z"
+    local_hash_after_install: "sha256:4c51a4108ce230d7aafc88c1304e5f7793042035d15f8a43001d74bcce9de368"
+  - target: docs/contracts/code-review.md
+    recipe: base.code-review
+    template: templates/docs/contracts/code-review.md

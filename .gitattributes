@@ -1,0 +1,9 @@
+# BEGIN - OWNED BY HARNESS-COMPOSER, DO NOT EDIT
+# Hide in diffs on GitHub
+.sdlc/** linguist-generated
+.harness-composer/** linguist-generated
+# Show in diffs on GitHub
+.sdlc/*/evidence.md -linguist-generated
+.sdlc/*/learning.md -linguist-generated
+.sdlc/*/evidence-assets/** -linguist-generated
+# END - OWNED BY HARNESS-COMPOSER, DO NOT EDIT

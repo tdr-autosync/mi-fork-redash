@@ -28,3 +28,19 @@ npm-debug.log
 
 client/cypress/screenshots
 client/cypress/videos
+
+# BEGIN - OWNED BY HARNESS-COMPOSER, DO NOT EDIT
+# Never ignore committed .sdlc artifacts
+!.sdlc/
+!.sdlc/**
+# Always ignore local-only .sdlc artifacts
+.sdlc/*/harness-*-context.yaml
+.sdlc/*/pr-readiness.md
+.sdlc/*/agent-sessions/
+.sdlc/worktrees/
+# Never ignore .harness-composer/
+!.harness-composer/
+!.harness-composer/**
+# Always ignore harness-composer run state files
+.harness-composer/state/runs/**
+# END - OWNED BY HARNESS-COMPOSER, DO NOT EDIT

@@ -1,0 +1,106 @@
+# Resolved recipes, versions, and source provenance.
+# Managed by Harness Composer. Do not edit manually.
+# Update only through Harness Composer CLI commands or workflows.
+$schema: "autonex://sdlc/harness-composer/schemas/recipe-state.v1.schema.json"
+generated:
+  at: "2026-11-24T12:57:44Z"
+  plugin_version: "0.62.0"
+  plugin_git_commit: "1c828f5b4684df6ced3d47d6b2be7d01a6204368"
+repo:
+  name: tdr-autosync/mi-fork-redash
+  origin_url: "git@github-autoscout24:tdr-autosync/mi-fork-redash.git"
+  main_branch: master
+root:
+  recipes:
+    matched:
+      - id: audit.docs-health
+        version: 20
+        source: central
+      - id: audit.harness-health
+        version: 4
+        source: central
+      - id: audit.repo-health
+        version: 3
+        source: central
+      - id: audit.scheduled-housekeeping
+        version: 23
+        source: central
+      - id: audit.security-baseline
+        version: 4
+        source: central
+      - id: audit.test-coverage
+        version: 5
+        source: central
+      - id: base.code-review
+        version: 2
+        source: central
+      - id: base.docs
+        version: 54
+        source: central
+      - id: base.harness
+        version: 36
+        source: central
+      - id: workflow.scheduled-housekeeping
+        version: 26
+        source: central
+projects:
+  - path: "."
+    recipes:
+      matched:
+        - id: audit.security-baseline.project
+          version: 2
+          source: central
+        - id: audit.test-coverage.project
+          version: 5
+          source: central
+        - id: project.frontend
+          version: 2
+          source: central
+        - id: project.node-package
+          version: 1
+          source: central
+        - id: project.node-package.frontend
+          version: 1
+          source: central
+        - id: project.node-package.lcov
+          version: 1
+          source: central
+        - id: project.python
+          version: 1
+          source: central
+        - id: project.python.coveragepy
+          version: 2
+          source: central
+  - path: redash/handlers
+    recipes:
+      matched:
+        - id: audit.security-baseline.project
+          version: 2
+          source: central
+        - id: audit.test-coverage.project
+          version: 5
+          source: central
+        - id: project.python
+          version: 1
+          source: central
+  - path: viz-lib
+    recipes:
+      matched:
+        - id: audit.security-baseline.project
+          version: 2
+          source: central
+        - id: audit.test-coverage.project
+          version: 5
+          source: central
+        - id: project.frontend
+          version: 2
+          source: central
+        - id: project.node-package
+          version: 1
+          source: central
+        - id: project.node-package.frontend
+          version: 1
+          source: central
+        - id: project.node-package.lcov
+          version: 1
+          source: central
