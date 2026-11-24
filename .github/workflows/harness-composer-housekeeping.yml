@@ -1,0 +1,56 @@
+name: Harness Composer housekeeping
+
+on:
+  workflow_dispatch:
+    inputs:
+      when_unchanged:
+        description: Behavior when repository and marketplace SHAs are unchanged.
+        required: false
+        type: choice
+        default: skip
+        options:
+          - run
+          - audit
+          - skip
+      housekeep_args:
+        description: Optional validated arguments for $sdlc:housekeep-harness, for example --activate workflow.test-coverage --filter workflow.test-coverage* --all-projects.
+        required: false
+        type: string
+  schedule:
+    # GitHub Actions cron schedules are interpreted in UTC.
+    # Choose run times carefully: housekeeping jobs may affect other production jobs.
+    - cron: "33 23 * * 3"
+
+concurrency:
+  group: harness-composer-housekeeping
+  cancel-in-progress: false
+
+# Required by the central reusable workflow. Never remove or reduce these grants,
+# including to satisfy actionlint; report validator compatibility issues instead.
+# Any job-level permissions block must preserve every grant below.
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: read
+  security-events: read
+  vulnerability-alerts: read
+
+jobs:
+  housekeeping:
+    if: ${{ github.ref_name == github.event.repository.default_branch }}
+    name: Run central Harness Composer housekeeping
+    uses: AutoScout24/agent-skills-marketplace/.github/workflows/central-sdlc-harness-composer-housekeeping.yml@master
+    with:
+      when_unchanged: ${{ github.event_name == 'workflow_dispatch' && inputs.when_unchanged || 'skip' }}
+      housekeep_args: ${{ github.event_name == 'workflow_dispatch' && inputs.housekeep_args || '' }}
+    secrets:
+      AUTONEX_HARNESS_COMPOSER_CODEX_API_KEY: ${{ secrets.AUTONEX_HARNESS_COMPOSER_CODEX_API_KEY }}
+      GH_CHECKOUT_APP_ID: ${{ secrets.GH_CHECKOUT_APP_ID }}
+      GH_CHECKOUT_PRIVATE_KEY: ${{ secrets.GH_CHECKOUT_PRIVATE_KEY }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      FAST_HTTPAUTH: ${{ secrets.FAST_HTTPAUTH }}
+      FAST_TOKEN: ${{ secrets.FAST_TOKEN }}
+      FAST_USER: ${{ secrets.FAST_USER }}
+      FAST_EMAIL: ${{ secrets.FAST_EMAIL }}

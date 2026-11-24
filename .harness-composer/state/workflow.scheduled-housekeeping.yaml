@@ -1,0 +1,4 @@
+# Scheduled housekeeping workflow state.
+# Managed by Harness Composer. Do not edit manually.
+# Update only through Harness Composer CLI commands or workflows.
+$schema: autonex://sdlc/harness-composer/schemas/scheduled-housekeeping-state.v1.schema.json

@@ -1,0 +1,48 @@
+# Repository settings, projects, and recipe selection.
+# Managed by Harness Composer. Do not edit manually.
+# Update only through Harness Composer CLI commands or workflows.
+$schema: "autonex://sdlc/harness-composer/schemas/config.v1.schema.json"
+repo:
+  name: tdr-autosync/mi-fork-redash
+  origin_url: "git@github-autoscout24:tdr-autosync/mi-fork-redash.git"
+  main_branch: master
+root:
+  recipes:
+    matched:
+      - audit.docs-health
+      - audit.harness-health
+      - audit.repo-health
+      - audit.scheduled-housekeeping
+      - audit.security-baseline
+      - audit.test-coverage
+      - base.code-review
+      - base.docs
+      - base.harness
+      - workflow.scheduled-housekeeping
+projects:
+  - path: "."
+    recipes:
+      matched:
+        - audit.security-baseline.project
+        - audit.test-coverage.project
+        - project.frontend
+        - project.node-package
+        - project.node-package.frontend
+        - project.node-package.lcov
+        - project.python
+        - project.python.coveragepy
+  - path: redash/handlers
+    recipes:
+      matched:
+        - audit.security-baseline.project
+        - audit.test-coverage.project
+        - project.python
+  - path: viz-lib
+    recipes:
+      matched:
+        - audit.security-baseline.project
+        - audit.test-coverage.project
+        - project.frontend
+        - project.node-package
+        - project.node-package.frontend
+        - project.node-package.lcov

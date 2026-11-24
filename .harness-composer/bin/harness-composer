@@ -1,0 +1,152 @@
+#!/usr/bin/env sh
+# Repository launcher for the installed Harness Composer.
+# Managed by Harness Composer. Do not edit manually.
+# Update only through Harness Composer CLI commands or workflows.
+set -eu
+
+script_dir=$(CDPATH= cd "$(dirname "$0")" && pwd)
+repo_root=$(CDPATH= cd "$script_dir/../.." && pwd)
+
+if [ -n "${AUTONEX_HARNESS_COMPOSER_RUNNER:-}" ]; then
+  runner="$AUTONEX_HARNESS_COMPOSER_RUNNER"
+else
+  runner=$(python3 - <<'PY'
+from __future__ import annotations
+
+import os
+import re
+import sys
+from pathlib import Path
+
+HARNESS_HOME = Path(os.environ.get("AUTONEX_HARNESS_COMPOSER_HOME", "~/.harness-composer")).expanduser()
+CONFIG_FILE = HARNESS_HOME / "CONFIG.yaml"
+MANAGED_REPO = HARNESS_HOME / "repo"
+
+
+def main() -> int:
+    config = read_yaml(CONFIG_FILE)
+    harness = require_mapping(config.get("harness"), "harness")
+    repo = require_mapping(harness.get("repo"), "harness.repo")
+    source = require_string(repo.get("source"), "harness.repo.source")
+    path_to_bin = require_string(repo.get("path_to_bin"), "harness.repo.path_to_bin")
+    validate_path_to_bin(path_to_bin)
+
+    if is_local_source(source):
+        if repo.get("ref") is not None:
+            fail("harness.repo.ref is invalid when harness.repo.source is a local path")
+        runner = resolve_local_source(source) / path_to_bin
+    else:
+        require_string(repo.get("ref"), "harness.repo.ref")
+        runner = MANAGED_REPO / path_to_bin
+
+    if not runner.exists() or not runner.is_file():
+        fail(
+            "configured Harness Composer runner not found: "
+            f"{runner}; run bootstrap --shim-resolution-only from the Harness Composer plugin's bundled runner. "
+            "If the configured checkout was removed, see docs/migration.md in that plugin "
+            "for explicit source/path migration while preserving deliberate refs and overrides."
+        )
+    if os.name != "nt" and not os.access(runner, os.X_OK):
+        fail(f"configured Harness Composer runner is not executable: {runner}")
+    print(runner)
+    return 0
+
+
+def read_yaml(path: Path) -> dict[str, object]:
+    if not path.exists():
+        fail(
+            f"user Harness Composer config not found: {path}; "
+            "run skill 'harness-composer:bootstrap-harness' at least once, or run "
+            "'plugins/harness-composer/harness-composer/bin/harness-composer bootstrap --shim-resolution-only' "
+            "from the agent-skills-marketplace repository root"
+        )
+    try:
+        import yaml
+
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except ImportError:
+        return read_simple_yaml(path)
+
+
+def read_simple_yaml(path: Path) -> dict[str, object]:
+    root: dict[str, object] = {}
+    stack: list[tuple[int, dict[str, object]]] = [(-1, root)]
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        stripped = raw.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        key, sep, value = stripped.partition(":")
+        if not sep:
+            fail(f"invalid YAML line in {path}: {raw}")
+        while stack and indent <= stack[-1][0]:
+            stack.pop()
+        current = stack[-1][1]
+        if value.strip() == "":
+            child: dict[str, object] = {}
+            current[key.strip()] = child
+            stack.append((indent, child))
+        else:
+            current[key.strip()] = parse_scalar(value.strip())
+    return root
+
+
+def parse_scalar(value: str) -> object:
+    if value in {"true", "false"}:
+        return value == "true"
+    if value.isdigit():
+        return int(value)
+    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+        return value[1:-1]
+    return value
+
+
+def require_mapping(value: object, label: str) -> dict[str, object]:
+    if not isinstance(value, dict):
+        fail(f"{label} must be a mapping")
+    return value
+
+
+def require_string(value: object, label: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        fail(f"{label} must be a non-empty string")
+    return value.strip()
+
+
+def validate_path_to_bin(value: str) -> None:
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts or value.endswith("/"):
+        fail("harness.repo.path_to_bin must be a relative file path inside the harness repo")
+
+
+def is_local_source(source: str) -> bool:
+    if source.startswith(("/", "./", "../", "~")) or re.match(r"^[A-Za-z]:[\\/]", source):
+        return True
+    return (HARNESS_HOME / source).exists() or Path(source).expanduser().exists()
+
+
+def resolve_local_source(source: str) -> Path:
+    path = Path(source).expanduser()
+    if path.is_absolute() or re.match(r"^[A-Za-z]:[\\/]", source):
+        return path
+    return HARNESS_HOME / path
+
+
+def fail(message: str) -> None:
+    print(f"harness-composer: {message}", file=sys.stderr)
+    raise SystemExit(2)
+
+
+raise SystemExit(main())
+PY
+)
+fi
+
+if [ ! -x "$runner" ]; then
+  echo "harness-composer: configured Harness Composer runner is not executable: $runner" >&2
+  exit 2
+fi
+
+export AUTONEX_HARNESS_COMPOSER_FROM_SHIM=1
+exec "$runner" --repo "$repo_root" "$@"
